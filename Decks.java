@@ -4,71 +4,86 @@ public class Decks {
 
     public static ArrayList<Carta> criarDeck1() {
         ArrayList<Carta> deck = new ArrayList<>();
-        deck.add(new Criatura("Cavaleiro", 1, 3, 6));
-        deck.add(new Criatura("Paladino", 3, 4, 7));
-        deck.add(new Criatura("Arqueiro", 1, 6, 3));
-        deck.add(new Criatura("Espadachim", 2, 5, 4));
-        deck.add(new Criatura("Grifo Guardião", 6, 6, 6));
-        deck.add(new Criatura("Dragão", 9, 10, 9));
-        deck.add(new Criatura("Guerreiro", 4, 6, 6));
-        deck.add(new Criatura("Clériga", 3, 3, 6));
-        deck.add(new Criatura("Sentinela", 1, 2, 5));
-        deck.add(new Criatura("Guardião", 2, 1, 7));
-        deck.add(new Feitico("Cura Divina", 4));
-        deck.add(new Feitico("Escudo da Virtude", 3));
-        deck.add(new Feitico("Chama Purificadora", 5));
-        deck.add(new Feitico("Bênção do Rei", 4));
-        deck.add(new Feitico("Reviver os Caídos", 6));
-        deck.add(new Feitico("Barreira Celestial", 4));
-        deck.add(new Feitico("Golpe Devastador", 3));
-        deck.add(new Feitico("Golpe da Justiça", 4));
-        deck.add(new Feitico("Vento da Vitória", 2));
-        deck.add(new Feitico("Luz Purificadora", 3));
-        deck.add(new Encantamento("Proteção Sagrada", 2));
-        deck.add(new Encantamento("Benção de Avalon", 3));
-        deck.add(new Encantamento("Muralha Impenetrável", 4));
-        deck.add(new Encantamento("Fúria dos Deuses", 5));
-        deck.add(new Encantamento("Campo de Força Divino", 3));
-        deck.add(new Encantamento("Aura da Luz", 2));
-        deck.add(new Encantamento("Chama Sagrada", 4));
-        deck.add(new Encantamento("Escudo de Cristal", 3));
-        deck.add(new Encantamento("Bênção Real", 2));
-        deck.add(new Encantamento("Campo de Energia Arcana", 5));
+
+        ArrayList<String> habilidadesCavaleiro = new ArrayList<>();
+        deck.add(new Criatura("Cavaleiro", 1, 6, 3, habilidadesCavaleiro));
+
+        ArrayList<String> habilidadesPaladino = new ArrayList<>();
+        habilidadesPaladino.add("Regeneração");
+        deck.add(new Criatura("Paladino", 3, 7, 4, habilidadesPaladino));
+
+        ArrayList<String> habilidadesArqueiro = new ArrayList<>();
+        habilidadesArqueiro.add("Rapidez");
+        deck.add(new Criatura("Arqueiro", 1, 3, 2, habilidadesArqueiro));
+
+        ArrayList<String> habilidadesEspadachim = new ArrayList<>();
+        habilidadesEspadachim.add("Esquiva");
+        deck.add(new Criatura("Espadachim", 2, 4, 4, habilidadesEspadachim));
+
+        ArrayList<String> habilidadesGrifo = new ArrayList<>();
+        habilidadesGrifo.add("Splash");
+        deck.add(new Criatura("Grifo Guardião", 6, 6, 6, habilidadesGrifo));
+
+        ArrayList<String> habilidadesDragao = new ArrayList<>();
+        habilidadesDragao.add("Provocar");
+        deck.add(new Criatura("Dragão", 9, 9, 9, habilidadesDragao));
+
+        ArrayList<String> habilidadesGuerreiro = new ArrayList<>();
+        deck.add(new Criatura("Guerreiro", 4, 6, 6, habilidadesGuerreiro));
+
+        ArrayList<String> habilidadesCleriga = new ArrayList<>();
+        habilidadesCleriga.add("Regeneração");
+        deck.add(new Criatura("Clériga", 3, 6, 5, habilidadesCleriga));
+
+        ArrayList<String> habilidadesSentinela = new ArrayList<>();
+        habilidadesSentinela.add("Provocar");
+        deck.add(new Criatura("Sentinela", 1, 5, 3, habilidadesSentinela));
+
+        ArrayList<String> habilidadesGuardiao = new ArrayList<>();
+        deck.add(new Criatura("Guardião", 2, 7, 4, habilidadesGuardiao));
+
         return deck;
     }
 
     public static ArrayList<Carta> criarDeck2() {
         ArrayList<Carta> deck = new ArrayList<>();
-        deck.add(new Criatura("Guerreiro Goblin", 1, 4, 5));
-        deck.add(new Criatura("Ogros", 1, 3, 7));
-        deck.add(new Criatura("Xamã Goblin", 2, 1, 9));
-        deck.add(new Criatura("Ladrão", 2, 5, 2));
-        deck.add(new Criatura("Goblin Explosivo", 2, 7, 1));
-        deck.add(new Criatura("Troll", 3, 5, 5));
-        deck.add(new Criatura("Berserker Orc", 3, 6, 4));
-        deck.add(new Criatura("Dragão Negro", 8, 9, 9));
-        deck.add(new Criatura("Goblin Venenoso", 2, 5, 2));
-        deck.add(new Criatura("Gigante", 5, 7, 7));
-        deck.add(new Feitico("Raio Negro", 3));
-        deck.add(new Feitico("Chuva de Fogo", 6));
-        deck.add(new Feitico("Maldição da Ruína", 5));
-        deck.add(new Feitico("Explosão Goblin", 4));
-        deck.add(new Feitico("Praga das Sombras", 6));
-        deck.add(new Feitico("Chama Infernal", 4));
-        deck.add(new Feitico("Vento do Caos", 2));
-        deck.add(new Feitico("Destruição Ancestral", 7));
-        deck.add(new Feitico("Magia Sombria", 3));
-        deck.add(new Feitico("Bola de Fogo", 5));
-        deck.add(new Encantamento("Vontade Sombria", 3));
-        deck.add(new Encantamento("Corrupção das Trevas", 4));
-        deck.add(new Encantamento("Escudo de Ossos", 3));
-        deck.add(new Encantamento("Rugido do Tirano", 5));
-        deck.add(new Encantamento("Aura de Terror", 2));
-        deck.add(new Encantamento("Ciclo Sombrio", 6));
-        deck.add(new Encantamento("Sombra da Destruição", 4));
-        deck.add(new Encantamento("Força dos Goblins", 2));
-        deck.add(new Encantamento("Campo de Ossos", 4));
-        deck.add(new Encantamento("Olho do Tirano", 3));
+
+        ArrayList<String> habilidadesGuerreiroGoblin = new ArrayList<>();
+        deck.add(new Criatura("Guerreiro Goblin", 1, 5, 4, habilidadesGuerreiroGoblin));
+
+        ArrayList<String> habilidadesOgros = new ArrayList<>();
+        habilidadesOgros.add("Provocar");
+        deck.add(new Criatura("Ogros", 1, 7, 6, habilidadesOgros));
+
+        ArrayList<String> habilidadesXamaGoblin = new ArrayList<>();
+        habilidadesXamaGoblin.add("Esquiva");
+        deck.add(new Criatura("Xamã Goblin", 2, 9, 5, habilidadesXamaGoblin));
+
+        ArrayList<String> habilidadesLadrao = new ArrayList<>();
+        habilidadesLadrao.add("Rapidez");
+        deck.add(new Criatura("Ladrão", 2, 2, 3, habilidadesLadrao));
+
+        ArrayList<String> habilidadesGoblinExplosivo = new ArrayList<>();
+        habilidadesGoblinExplosivo.add("Splash");
+        deck.add(new Criatura("Goblin Explosivo", 2, 1, 2, habilidadesGoblinExplosivo));
+
+        ArrayList<String> habilidadesTroll = new ArrayList<>();
+        deck.add(new Criatura("Troll", 3, 5, 4, habilidadesTroll));
+
+        ArrayList<String> habilidadesBerserkerOrc = new ArrayList<>();
+        habilidadesBerserkerOrc.add("Regeneração");
+        deck.add(new Criatura("Berserker Orc", 3, 4, 5, habilidadesBerserkerOrc));
+
+        ArrayList<String> habilidadesDragaoNegro = new ArrayList<>();
+        habilidadesDragaoNegro.add("Provocar");
+        deck.add(new Criatura("Dragão Negro", 8, 9, 9, habilidadesDragaoNegro));
+
+        ArrayList<String> habilidadesGoblinVenenoso = new ArrayList<>();
+        deck.add(new Criatura("Goblin Venenoso", 2, 2, 3, habilidadesGoblinVenenoso));
+
+        ArrayList<String> habilidadesGigante = new ArrayList<>();
+        deck.add(new Criatura("Gigante", 5, 7, 7, habilidadesGigante));
+
         return deck;
     }
 }
