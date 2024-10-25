@@ -12,15 +12,21 @@ public class Feitico extends Carta {
         // Exemplo de efeito de feitiço: cura ou dano
         if (efeito.equals("cura")) {
             if (jogador == 1) {
-                jogo.vidaJogador1 += 10; // Cura Jogador 1
+                jogo.setVidaJogador1(jogo.getVidaJogador1() + 4); // Cura Jogador 1
             } else {
-                jogo.vidaJogador2 += 10; // Cura Jogador 2
+                jogo.setVidaJogador2(jogo.getVidaJogador2() + 4); // Cura Jogador 2
             }
         } else if (efeito.equals("dano")) {
             if (jogador == 1) {
-                jogo.vidaJogador2 -= 10; // Dano ao Jogador 2
+                jogo.setVidaJogador2(jogo.getVidaJogador2() - 2); // Dano ao Jogador 2
             } else {
-                jogo.vidaJogador1 -= 10; // Dano ao Jogador 1
+                jogo.setVidaJogador1(jogo.getVidaJogador1() - 2); // Dano ao Jogador 1
+            }
+        } else if (efeito.equals("defesa")) {
+            if (jogador == 1) {
+                jogo.setVidaJogador1(jogo.getVidaJogador1() + 2);
+            } else {
+                jogo.setVidaJogador2(jogo.getVidaJogador2() + 2);
             }
         }
     }

@@ -12,9 +12,27 @@ public class Encantamento extends Carta {
         // Exemplo: aumentar mana permanentemente para o jogador
         if (efeitoContinuo.equals("aumentarMana")) {
             if (jogador == 1) {
-                jogo.manaJogador1 += 2;  // Aumenta mana permanentemente do Jogador 1
+                jogo.setManaJogador1(jogo.getManaJogador1() + 2);
             } else {
-                jogo.manaJogador2 += 2;  // Aumenta mana permanentemente do Jogador 2
+                jogo.setManaJogador2(jogo.getManaJogador2() + 2);
+            }
+        } else if (efeitoContinuo.equals("diminuirMana")) {
+            if (jogador == 1) {
+                jogo.setManaJogador2(jogo.getManaJogador2() - 2);
+            } else {
+                jogo.setManaJogador1(jogo.getManaJogador1() - 2);
+            }
+        } else if (efeitoContinuo.equals("ataque")) {
+            if (jogador == 1) {
+                jogo.setVidaJogador2(jogo.getVidaJogador2() - 10);
+            } else{
+                jogo.setVidaJogador1(jogo.getVidaJogador1() - 10);
+            }
+        } else if (efeitoContinuo.equals("escudo")) {
+            if (jogador == 1) {
+                jogo.setVidaJogador1(jogo.getVidaJogador1() + 10);
+            } else{
+                jogo.setVidaJogador2(jogo.getVidaJogador2() + 10);
             }
         }
     }
