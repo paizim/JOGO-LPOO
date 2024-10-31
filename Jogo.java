@@ -163,8 +163,9 @@ public class Jogo {
                 System.out.println("JOGADOR 2 COMEÇA O JOGO!");
             }
         }
+
         public void iniciar() {
-        introducao(); // Chamar a introdução antes de iniciar o jogo
+        introducao();
         distribuirCartas();
         while (vidaJogador1 > 0 && vidaJogador2 > 0) {
             manaJogador1 += 1; // Aumenta a mana do Jogador 1
@@ -337,22 +338,22 @@ public class Jogo {
         if (!deck2.isEmpty()) {
             maoJogador2.add(deck2.remove(0));
         }
-
+        int jogadorAtual = vezDoJogador1 ? 1 : 2;
         // Fase de Colocação - Ambos colocam uma carta, começando pelo Jogador 1
-        for (int jogador = 1; jogador <= 2; jogador++) {
-            ArrayList<Carta> maoAtual = jogador == 1 ? maoJogador1 : maoJogador2;
-            int manaAtual = jogador == 1 ? manaJogador1 : manaJogador2;
+        for (int i =0; i < 2; i++) {
+            ArrayList<Carta> maoAtual = jogadorAtual == 1 ? maoJogador1 : maoJogador2;
+            int manaAtual = (jogadorAtual == 1) ? manaJogador1 : manaJogador2;
 
-            System.out.printf("Jogador %d: Vida: %d, Mana: %d\n", jogador,
-                    jogador == 1 ? vidaJogador1 : vidaJogador2, manaAtual);
+            System.out.printf("Jogador %d: Vida: %d, Mana: %d\n", jogadorAtual,
+                    jogadorAtual == 1 ? vidaJogador1 : vidaJogador2, manaAtual);
 
-            System.out.printf("Jogador %d, escolha uma carta para colocar no campo (0 para passar):\n", jogador);
+            System.out.printf("Jogador %d, escolha uma carta para colocar no campo (0 para passar):\n", jogadorAtual);
 
-            for (int i = 0; i < maoAtual.size(); i++) {
-                Carta carta = maoAtual.get(i);
+            for (int j = 0; j < maoAtual.size(); j++) {
+                Carta carta = maoAtual.get(j);
                 String atributos = (carta instanceof Criatura) ?
                         String.format(" [Poder: %d, Resistência: %d]", ((Criatura) carta).getPoder(), ((Criatura) carta).getResistencia()) : "";
-                System.out.println((i + 1) + ". " + carta.nome + " (Custo de Mana: " + carta.custoMana + ")" + atributos);
+                System.out.println((j + 1) + ". " + carta.nome + " (Custo de Mana: " + carta.custoMana + ")" + atributos);
             }
 
             int escolha = scanner.nextInt() - 1;
@@ -363,7 +364,7 @@ public class Jogo {
                         throw new ManaInsuficienteException("Mana insuficiente para jogar a carta " + cartaEscolhida.nome + ".");
                     }
                     if (cartaEscolhida instanceof Criatura) {
-                        if (jogador == 1) {
+                        if (jogadorAtual == 1) {
                             campoJogador1.add((Criatura) cartaEscolhida);
                         } else {
                             campoJogador2.add((Criatura) cartaEscolhida);
@@ -372,12 +373,12 @@ public class Jogo {
                         System.out.printf("%s foi colocada no campo.\n", cartaEscolhida.nome);
                     } else if (cartaEscolhida instanceof Feitico) {
                         Feitico feitico = (Feitico) cartaEscolhida;
-                        feitico.usar(this, jogador);
+                        feitico.usar(this, jogadorAtual);
                     } else if (cartaEscolhida instanceof Encantamento) {
                         Encantamento encantamento = (Encantamento) cartaEscolhida;
-                        encantamento.aplicar(this, jogador);
+                        encantamento.aplicar(this, jogadorAtual);
                     }
-                    if (jogador == 1) {
+                    if (jogadorAtual == 1) {
                         manaJogador1 -= cartaEscolhida.custoMana;
                     } else {
                         manaJogador2 -= cartaEscolhida.custoMana;
@@ -386,6 +387,7 @@ public class Jogo {
                     System.out.println(e.getMessage());
                 }
             }
+            jogadorAtual = (jogadorAtual == 1) ? 2 : 1;
         }
         // Fase de Ataque - Ambos atacam, começando pelo Jogador
         for (int jogador = 1; jogador <= 2; jogador++) {
