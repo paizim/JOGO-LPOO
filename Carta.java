@@ -1,4 +1,4 @@
-public class Carta {
+public abstract class Carta {
     protected String nome;
     protected int custoMana;
 
@@ -19,4 +19,5 @@ public class Carta {
     public String toString() {
         return "Nome: " + nome + ", Custo de Mana: " + custoMana;
     }
+    public abstract void usarCarta();
 }

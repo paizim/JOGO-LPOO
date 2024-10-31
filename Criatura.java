@@ -12,7 +12,11 @@ public class Criatura extends Carta {
         this.resistencia = resistencia;
         this.habilidades = habilidades;
     }
-
+    @Override
+    public void usarCarta() {
+        System.out.println(getNome() + " entra em campo com " + poder + " de poder e " + resistencia + " de resistência.");
+        mostrarAtributos();  // Exibir atributos da criatura ao ser usada
+    }
     public void atacar(Criatura inimigo, ArrayList<Criatura> outrasCriaturasInimigas) {
         if (inimigo.temHabilidade("Provocar") && !this.temHabilidade("Esquiva")) {
             System.out.println(inimigo.getNome() + " tem a habilidade Provocar. " + this.getNome() + " é forçado a atacar.");

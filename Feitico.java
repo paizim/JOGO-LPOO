@@ -5,6 +5,10 @@ public class Feitico extends Carta {
         super(nome, custoMana);
         this.efeito = efeito;
     }
+    @Override
+    public void usarCarta() {
+        System.out.println(getNome() + " foi lançado com efeito: " + efeito);
+    }
     public void usar(Jogo jogo, int jogador) {
         // Defina os efeitos do feitiço aqui (por exemplo, dano, cura, etc.)
         System.out.printf("Jogador %d usou o feitiço: %s! Efeito: %s\n", jogador, nome, efeito);

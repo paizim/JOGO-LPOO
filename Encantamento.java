@@ -5,6 +5,11 @@ public class Encantamento extends Carta {
         super(nome, custoMana);
         this.efeitoContinuo = efeitoContinuo;
     }
+    @Override
+    public void usarCarta() {
+        System.out.println(getNome() + " foi ativado com efeito contínuo: " + efeitoContinuo);
+    }
+
     public void aplicar(Jogo jogo, int jogador) {
         // Defina o efeito permanente do encantamento aqui
         System.out.printf("Jogador %d aplicou o encantamento: %s! Efeito permanente: %s\n", jogador, nome, efeitoContinuo);
@@ -41,4 +46,3 @@ public class Encantamento extends Carta {
         return super.toString() + ", Efeito Contínuo: " + efeitoContinuo;
     }
 }
-

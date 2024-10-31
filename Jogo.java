@@ -134,35 +134,36 @@ public class Jogo {
     }
 
     private void decidirQuemComeca() {
-        System.out.println("TIREM PAR OU IMPAR PARA VER QUEM COMEÇA.");
-        System.out.print("JOGADOR 1, DIGITE SUA ESCOLHA (PAR OU IMPAR): ");
-        String escolhaJogador1 = scanner.nextLine().toUpperCase();
-        System.out.print("JOGADOR 2, DIGITE SUA ESCOLHA (PAR OU IMPAR): ");
-        String escolhaJogador2 = scanner.nextLine().toUpperCase();
+            System.out.println("TIREM PAR OU IMPAR PARA VER QUEM COMEÇA.");
+            String escolhaJogador1;
+            String escolhaJogador2;
 
-        while ((!escolhaJogador1.equals("PAR") && !escolhaJogador1.equals("IMPAR")) ||
-                (!escolhaJogador2.equals("PAR") && !escolhaJogador2.equals("IMPAR"))) {
-            System.out.println("Escolha inválida. Ambos os jogadores devem escolher entre 'PAR' e 'IMPAR'.");
-            decidirQuemComeca(); // Permitir nova tentativa
-            return;
+            // Loop até que ambos façam escolhas válidas
+            do {
+                System.out.print("JOGADOR 1, DIGITE SUA ESCOLHA (PAR OU IMPAR): ");
+                escolhaJogador1 = scanner.nextLine().toUpperCase();
+            } while (!escolhaJogador1.equals("PAR") && !escolhaJogador1.equals("IMPAR"));
+
+            do {
+                System.out.print("JOGADOR 2, DIGITE SUA ESCOLHA (PAR OU IMPAR): ");
+                escolhaJogador2 = scanner.nextLine().toUpperCase();
+            } while (!escolhaJogador2.equals("PAR") && !escolhaJogador2.equals("IMPAR"));
+
+            // Sorteio do número
+            int numeroSorteado = random.nextInt(10) + 1; // Número entre 1 e 10
+            boolean resultadoPar = (numeroSorteado % 2 == 0);
+            System.out.printf("O NÚMERO SORTEADO É: %d (%s)\n", numeroSorteado, resultadoPar ? "PAR" : "IMPAR");
+
+            // Determina quem começa
+            if (escolhaJogador1.equals(resultadoPar ? "PAR" : "IMPAR")) {
+                vezDoJogador1 = true;
+                System.out.println("JOGADOR 1 COMEÇA O JOGO!");
+            } else {
+                vezDoJogador1 = false;
+                System.out.println("JOGADOR 2 COMEÇA O JOGO!");
+            }
         }
-
-        // Sorteio do número
-        int numeroSorteado = random.nextInt(10) + 1; // Número entre 1 e 10
-        boolean resultadoPar = (numeroSorteado % 2 == 0);
-        System.out.printf("O NÚMERO SORTEADO É: %d (%s)\n", numeroSorteado, resultadoPar ? "PAR" : "IMPAR");
-
-        // Determina quem começa
-        if (escolhaJogador1.equals(resultadoPar ? "PAR" : "IMPAR")) {
-            vezDoJogador1 = true;
-            System.out.println("JOGADOR 1 COMEÇA O JOGO!");
-        } else {
-            vezDoJogador1 = false;
-            System.out.println("JOGADOR 2 COMEÇA O JOGO!");
-        }
-    }
-
-    public void iniciar() {
+        public void iniciar() {
         introducao(); // Chamar a introdução antes de iniciar o jogo
         distribuirCartas();
         while (vidaJogador1 > 0 && vidaJogador2 > 0) {
@@ -171,7 +172,7 @@ public class Jogo {
             jogarTurno();
             if (vidaJogador1 <= 0 || vidaJogador2 <= 0) break;
 
-                    }
+        }
         mostrarVencedor();
     }
 
@@ -201,6 +202,7 @@ public class Jogo {
             System.out.println(c);
         }
     }
+
     private void colocarNoCampo(int jogador, int indiceCarta) {
         Carta carta = (jogador == 1) ? maoJogador1.remove(indiceCarta) : maoJogador2.remove(indiceCarta);
         if (jogador == 1) {
@@ -299,6 +301,7 @@ public class Jogo {
         }
         exibirCemiterio();
     }
+
     // Função para resolver combate entre duas criaturas
     private void realizarCombate(Criatura atacante, Criatura defensora) {
         int resistenciaDefensora = defensora.getResistencia() - atacante.getPoder();
@@ -325,6 +328,7 @@ public class Jogo {
             System.out.println(atacante.getNome() + " foi destruída!");
         }
     }
+
     private void jogarTurno() {
         // Fase de Compra - Ambos compram uma carta
         if (!deck1.isEmpty()) {
@@ -354,7 +358,10 @@ public class Jogo {
             int escolha = scanner.nextInt() - 1;
             if (escolha != -1 && escolha >= 0 && escolha < maoAtual.size()) {
                 Carta cartaEscolhida = maoAtual.get(escolha);
-                if (cartaEscolhida.custoMana <= manaAtual) {
+                try {
+                    if (cartaEscolhida.custoMana > manaAtual) {
+                        throw new ManaInsuficienteException("Mana insuficiente para jogar a carta " + cartaEscolhida.nome + ".");
+                    }
                     if (cartaEscolhida instanceof Criatura) {
                         if (jogador == 1) {
                             campoJogador1.add((Criatura) cartaEscolhida);
@@ -363,21 +370,24 @@ public class Jogo {
                         }
                         maoAtual.remove(escolha);
                         System.out.printf("%s foi colocada no campo.\n", cartaEscolhida.nome);
+                    } else if (cartaEscolhida instanceof Feitico) {
+                        Feitico feitico = (Feitico) cartaEscolhida;
+                        feitico.usar(this, jogador);
+                    } else if (cartaEscolhida instanceof Encantamento) {
+                        Encantamento encantamento = (Encantamento) cartaEscolhida;
+                        encantamento.aplicar(this, jogador);
                     }
                     if (jogador == 1) {
                         manaJogador1 -= cartaEscolhida.custoMana;
                     } else {
                         manaJogador2 -= cartaEscolhida.custoMana;
                     }
-                } else {
-                    System.out.println("Mana insuficiente para jogar essa carta.");
+                } catch (ManaInsuficienteException e) {
+                    System.out.println(e.getMessage());
                 }
-            } else {
-                System.out.printf("Jogador %d passou sua vez de colocar carta.\n", jogador);
             }
         }
-
-        // Fase de Ataque - Ambos atacam, começando pelo Jogador 1
+        // Fase de Ataque - Ambos atacam, começando pelo Jogador
         for (int jogador = 1; jogador <= 2; jogador++) {
             ArrayList<Criatura> campoAtual = jogador == 1 ? campoJogador1 : campoJogador2;
             ArrayList<Criatura> campoOponente = jogador == 1 ? campoJogador2 : campoJogador1;
@@ -428,10 +438,10 @@ public class Jogo {
 
         // Exibir pontuação final de ambos os jogadores ao fim do turno
         System.out.printf("Fim do turno: Vida Jogador 1: %d, Vida Jogador 2: %d\n", vidaJogador1, vidaJogador2);
+        ganharExperiencia(1); // Jogador 1 ganha experiência
+        ganharExperiencia(2); // Jogador 2 ganha experiência
     }
-
 }
-
 
 
 
