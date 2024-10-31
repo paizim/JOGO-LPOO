@@ -3,24 +3,22 @@ import java.util.ArrayList;
 public class Criatura extends Carta {
     protected int poder;
     protected int resistencia;
-    protected int mana;
-    private ArrayList<String> habilidades;
-    private boolean provocada = false;
+    protected ArrayList<String> habilidades;
+    protected boolean provocada = false;
 
-    public Criatura(String nome, int poder, int resistencia, int mana, ArrayList<String> habilidades) {
-        super(nome, poder);
+    public Criatura(String nome, int poder, int resistencia, int custoMana, ArrayList<String> habilidades) {
+        super(nome, custoMana);
         this.poder = poder;
         this.resistencia = resistencia;
-        this.mana = mana;
         this.habilidades = habilidades;
     }
 
     public void atacar(Criatura inimigo, ArrayList<Criatura> outrasCriaturasInimigas) {
-        if (inimigo.habilidades.contains("Provocar") && !this.habilidades.contains("Esquiva")) {
+        if (inimigo.temHabilidade("Provocar") && !this.temHabilidade("Esquiva")) {
             System.out.println(inimigo.getNome() + " tem a habilidade Provocar. " + this.getNome() + " é forçado a atacar.");
         }
 
-        if (!habilidades.contains("Rapidez") && !provocada) {
+        if (!temHabilidade("Rapidez") && !provocada) {
             System.out.println(nome + " não pode atacar neste turno (não tem Rapidez).");
             return;
         }
@@ -28,7 +26,7 @@ public class Criatura extends Carta {
         System.out.println(nome + " está atacando " + inimigo.getNome() + " causando " + poder + " de dano!");
         inimigo.receberDano(poder);
 
-        if (habilidades.contains("Splash")) {
+        if (temHabilidade("Splash")) {
             System.out.println(nome + " ativa a habilidade Splash, espalhando metade do dano para as outras criaturas inimigas.");
             int danoSplash = poder / 2;
             for (Criatura criatura : outrasCriaturasInimigas) {
@@ -41,12 +39,12 @@ public class Criatura extends Carta {
     }
 
     public void receberDano(int dano) {
-        if (habilidades.contains("Esquiva")) {
+        if (temHabilidade("Esquiva")) {
             System.out.println(nome + " ativa a habilidade Esquiva e desvia do ataque.");
             return;
         }
 
-        if (habilidades.contains("Regeneração")) {
+        if (temHabilidade("Regeneração")) {
             System.out.println(nome + " ativa a habilidade Regeneração e restaura 2 pontos de resistência.");
             resistencia += 2;
         }
@@ -56,10 +54,6 @@ public class Criatura extends Carta {
         if (resistencia <= 0) {
             System.out.println(nome + " foi derrotado!");
         }
-    }
-
-    public String getNome() {
-        return nome;
     }
 
     public void mostrarAtributos() {
@@ -87,17 +81,7 @@ public class Criatura extends Carta {
         return resistencia;
     }
 
-    public int getMana() {
-        return mana;
-    }
-
-    public void adicionarHabilidade(String habilidade) {
-        if (!habilidades.contains(habilidade)) {
-            habilidades.add(habilidade);
-        }
-    }
-
-    public void removerHabilidade(String habilidade) {
-        habilidades.remove(habilidade);
+    public void setResistencia(int resistencia) {
+        this.resistencia = resistencia;
     }
 }
