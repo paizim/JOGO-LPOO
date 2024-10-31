@@ -168,12 +168,10 @@ public class Jogo {
         while (vidaJogador1 > 0 && vidaJogador2 > 0) {
             manaJogador1 += 1; // Aumenta a mana do Jogador 1
             manaJogador2 += 1; // Aumenta a mana do Jogador 2
-            jogarTurno(1);
+            jogarTurno();
             if (vidaJogador1 <= 0 || vidaJogador2 <= 0) break;
 
-            // Jogador 2 joga
-            jogarTurno(2);
-        }
+                    }
         mostrarVencedor();
     }
 
@@ -327,111 +325,113 @@ public class Jogo {
             System.out.println(atacante.getNome() + " foi destruída!");
         }
     }
-
-    private void jogarTurno(int jogador) {
-        ArrayList<Carta> maoAtual = jogador == 1 ? maoJogador1 : maoJogador2;
-        System.out.printf("É a vez do Jogador %d! Vida: %d, Mana: %d\n", jogador,
-                jogador == 1 ? vidaJogador1 : vidaJogador2,
-                jogador == 1 ? manaJogador1 : manaJogador2);
-
-        // Jogar uma nova carta
-        System.out.println("Escolha uma carta para jogar (0 para passar a vez):");
-        for (int i = 0; i < maoAtual.size(); i++) {
-            System.out.println(i + 1 + ". " + maoAtual.get(i));
+    private void jogarTurno() {
+        // Fase de Compra - Ambos compram uma carta
+        if (!deck1.isEmpty()) {
+            maoJogador1.add(deck1.remove(0));
+        }
+        if (!deck2.isEmpty()) {
+            maoJogador2.add(deck2.remove(0));
         }
 
-        int escolha = scanner.nextInt() - 1;
-        if (escolha == -1) {
-            System.out.println("Você passou a vez.");
-            return; // Passa a vez
-        }
+        // Fase de Colocação - Ambos colocam uma carta, começando pelo Jogador 1
+        for (int jogador = 1; jogador <= 2; jogador++) {
+            ArrayList<Carta> maoAtual = jogador == 1 ? maoJogador1 : maoJogador2;
+            int manaAtual = jogador == 1 ? manaJogador1 : manaJogador2;
 
-        if (escolha >= 0 && escolha < maoAtual.size()) {
-            Carta cartaEscolhida = maoAtual.get(escolha);
-            if (cartaEscolhida.custoMana <= (jogador == 1 ? manaJogador1 : manaJogador2)) {
-                // Coloca a carta no campo
-                if (cartaEscolhida instanceof Criatura) {
-                    // Adiciona a criatura ao campo
-                    if (jogador == 1) {
-                        campoJogador1.add((Criatura) cartaEscolhida);
-                    } else {
-                        campoJogador2.add((Criatura) cartaEscolhida);
+            System.out.printf("Jogador %d: Vida: %d, Mana: %d\n", jogador,
+                    jogador == 1 ? vidaJogador1 : vidaJogador2, manaAtual);
+
+            System.out.printf("Jogador %d, escolha uma carta para colocar no campo (0 para passar):\n", jogador);
+
+            for (int i = 0; i < maoAtual.size(); i++) {
+                Carta carta = maoAtual.get(i);
+                String atributos = (carta instanceof Criatura) ?
+                        String.format(" [Poder: %d, Resistência: %d]", ((Criatura) carta).getPoder(), ((Criatura) carta).getResistencia()) : "";
+                System.out.println((i + 1) + ". " + carta.nome + " (Custo de Mana: " + carta.custoMana + ")" + atributos);
+            }
+
+            int escolha = scanner.nextInt() - 1;
+            if (escolha != -1 && escolha >= 0 && escolha < maoAtual.size()) {
+                Carta cartaEscolhida = maoAtual.get(escolha);
+                if (cartaEscolhida.custoMana <= manaAtual) {
+                    if (cartaEscolhida instanceof Criatura) {
+                        if (jogador == 1) {
+                            campoJogador1.add((Criatura) cartaEscolhida);
+                        } else {
+                            campoJogador2.add((Criatura) cartaEscolhida);
+                        }
+                        maoAtual.remove(escolha);
+                        System.out.printf("%s foi colocada no campo.\n", cartaEscolhida.nome);
                     }
-                    maoAtual.remove(escolha); // Remove da mão
-                    System.out.printf("%s foi colocada no campo.\n", cartaEscolhida.nome);
-                }
-
-                // Reduz a mana após jogar a carta
-                if (jogador == 1) {
-                    manaJogador1 -= cartaEscolhida.custoMana;
+                    if (jogador == 1) {
+                        manaJogador1 -= cartaEscolhida.custoMana;
+                    } else {
+                        manaJogador2 -= cartaEscolhida.custoMana;
+                    }
                 } else {
-                    manaJogador2 -= cartaEscolhida.custoMana;
+                    System.out.println("Mana insuficiente para jogar essa carta.");
                 }
             } else {
-                System.out.println("Mana insuficiente para jogar essa carta.");
+                System.out.printf("Jogador %d passou sua vez de colocar carta.\n", jogador);
             }
-        } else {
-            System.out.println("Escolha inválida.");
         }
 
-        // Atacar criaturas inimigas
-        ArrayList<Criatura> campoOponente = (jogador == 1) ? campoJogador2 : campoJogador1;
-        ArrayList<Criatura> campoAtual = (jogador == 1) ? campoJogador1 : campoJogador2;
+        // Fase de Ataque - Ambos atacam, começando pelo Jogador 1
+        for (int jogador = 1; jogador <= 2; jogador++) {
+            ArrayList<Criatura> campoAtual = jogador == 1 ? campoJogador1 : campoJogador2;
+            ArrayList<Criatura> campoOponente = jogador == 1 ? campoJogador2 : campoJogador1;
+            int vidaOponente = jogador == 1 ? vidaJogador2 : vidaJogador1;
 
-        // Permitir ataques enquanto houver criaturas no campo do oponente
-        while (!campoOponente.isEmpty()) {
-            System.out.println("Escolha uma criatura no seu campo para atacar uma criatura do oponente:");
-            for (int i = 0; i < campoAtual.size(); i++) {
-                System.out.println((i + 1) + ". " + campoAtual.get(i).nome);
-            }
-
-            int escolhaAtacante = scanner.nextInt() - 1;
-            if (escolhaAtacante >= 0 && escolhaAtacante < campoAtual.size()) {
-                Criatura atacante = (Criatura) campoAtual.get(escolhaAtacante); // Casting correto
-                System.out.println("Escolha uma criatura do oponente para atacar:");
-                for (int i = 0; i < campoOponente.size(); i++) {
-                    System.out.println((i + 1) + ". " + campoOponente.get(i).nome);
+            if (!campoAtual.isEmpty()) {
+                System.out.printf("Jogador %d, escolha uma criatura para atacar:\n", jogador);
+                for (int i = 0; i < campoAtual.size(); i++) {
+                    Criatura criatura = campoAtual.get(i);
+                    System.out.printf("%d. %s (Poder: %d, Resistência: %d)\n", i + 1, criatura.nome, criatura.getPoder(), criatura.getResistencia());
                 }
 
-                int escolhaDefensora = scanner.nextInt() - 1;
-                if (escolhaDefensora >= 0 && escolhaDefensora < campoOponente.size()) {
-                    Criatura defensora = campoOponente.get(escolhaDefensora);
-                    realizarCombate(atacante, defensora);
+                int escolhaAtacante = scanner.nextInt() - 1;
+                if (escolhaAtacante >= 0 && escolhaAtacante < campoAtual.size()) {
+                    Criatura atacante = campoAtual.get(escolhaAtacante);
 
-                    // Se a criatura do oponente for destruída, remova-a do campo
-                    if (defensora.getResistencia() <= 0) {
-                        campoOponente.remove(defensora);
-                        System.out.printf("A criatura %s foi destruída!\n", defensora.nome);
-                    }
-
-                    // Verifique se o jogo deve continuar com o próximo ataque
-                    if (campoOponente.isEmpty()) {
-                        System.out.println("Não há mais criaturas no campo do oponente. Você pode atacar diretamente o jogador.");
-                        break; // Sair do loop de ataque se não há mais criaturas
+                    if (!campoOponente.isEmpty()) {
+                        System.out.println("Escolha uma criatura do oponente para atacar:");
+                        for (int i = 0; i < campoOponente.size(); i++) {
+                            Criatura defensora = campoOponente.get(i);
+                            System.out.printf("%d. %s (Poder: %d, Resistência: %d)\n", i + 1, defensora.nome, defensora.getPoder(), defensora.getResistencia());
+                        }
+                        int escolhaDefensora = scanner.nextInt() - 1;
+                        if (escolhaDefensora >= 0 && escolhaDefensora < campoOponente.size()) {
+                            Criatura defensora = campoOponente.get(escolhaDefensora);
+                            realizarCombate(atacante, defensora);
+                            if (defensora.getResistencia() <= 0) {
+                                campoOponente.remove(defensora);
+                                System.out.printf("A criatura %s foi destruída!\n", defensora.nome);
+                            }
+                        }
+                    } else {
+                        if (jogador == 1) {
+                            vidaJogador2 -= 5; // Exemplo de dano fixo
+                            System.out.println("Jogador 1 atacou diretamente Jogador 2, causando 5 de dano.");
+                        } else {
+                            vidaJogador1 -= 5;
+                            System.out.println("Jogador 2 atacou diretamente Jogador 1, causando 5 de dano.");
+                        }
                     }
                 } else {
                     System.out.println("Escolha inválida.");
                 }
             } else {
-                System.out.println("Escolha inválida.");
+                System.out.printf("Jogador %d não tem criaturas para atacar.\n", jogador);
             }
         }
 
-        // Se não houver criaturas no campo do oponente, atacar diretamente o jogador
-        if (campoOponente.isEmpty()) {
-            if (jogador == 1) {
-                vidaJogador2 -= 5; // Exemplo de dano fixo
-                System.out.println("Jogador 1 atacou diretamente Jogador 2, causando 5 de dano.");
-            } else {
-                vidaJogador1 -= 5;
-                System.out.println("Jogador 2 atacou diretamente Jogador 1, causando 5 de dano.");
-            }
-        }
-
-        // Ganhar experiência (se aplicável)
-        ganharExperiencia(jogador);
+        // Exibir pontuação final de ambos os jogadores ao fim do turno
+        System.out.printf("Fim do turno: Vida Jogador 1: %d, Vida Jogador 2: %d\n", vidaJogador1, vidaJogador2);
     }
+
 }
+
 
 
 
