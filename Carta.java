@@ -1,4 +1,4 @@
-public abstract class Carta {
+public abstract class Carta implements Usavel {
     protected String nome;
     protected int custoMana;
 
@@ -20,4 +20,5 @@ public abstract class Carta {
         return "Nome: " + nome + ", Custo de Mana: " + custoMana;
     }
     public abstract void usarCarta();
+
 }
