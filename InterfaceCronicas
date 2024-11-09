@@ -1,0 +1,202 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
+public class InterfaceCronicas extends JFrame {
+    private JLabel perguntaLabel;
+    private JTextField campoEntrada;
+    private String personagem1, personagem2, deck1, deck2;
+    private int vidaJogador1 = 15, vidaJogador2 = 15;
+    private int manaJogador1 = 1, manaJogador2 = 1;
+    private int etapaPergunta = 0;
+
+    private JLabel infoJogador1Nome;
+    private JLabel infoJogador1Vida;
+    private JLabel infoJogador1Mana;
+    private JLabel infoJogador1Deck;
+    private JLabel infoJogador2Nome;
+    private JLabel infoJogador2Vida;
+    private JLabel infoJogador2Mana;
+    private JLabel infoJogador2Deck;
+    private Font arialFont;
+    private Image backgroundImage;
+
+    public InterfaceCronicas() {
+        // definir fonte Arial
+        arialFont = new Font("Arial", Font.PLAIN, 18);
+
+        // Carregar a imagem de fundo
+        try {
+            backgroundImage = ImageIO.read(new File("src/images/background.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Erro ao carregar a imagem de fundo.");
+        }
+
+        setTitle("Crônicas de Arcana");
+        setSize(800, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // painel com fundo personalizado
+        BackgroundPanel mainPanel = new BackgroundPanel();
+        mainPanel.setLayout(new BorderLayout());
+        setContentPane(mainPanel);
+
+        JPanel painelInfoJogadores = new JPanel();
+        painelInfoJogadores.setLayout(new GridLayout(4, 2));
+        painelInfoJogadores.setOpaque(false);  // Transparente para mostrar o fundo
+
+        infoJogador1Nome = new JLabel("Jogador 1: Nome ", SwingConstants.LEFT);
+        infoJogador1Nome.setFont(arialFont);
+        infoJogador1Vida = new JLabel("Vida: ", SwingConstants.LEFT);
+        infoJogador1Vida.setFont(arialFont);
+        infoJogador1Mana = new JLabel("Mana: ", SwingConstants.LEFT);
+        infoJogador1Mana.setFont(arialFont);
+        infoJogador1Deck = new JLabel("Reino: ", SwingConstants.LEFT);
+        infoJogador1Deck.setFont(arialFont);
+
+        infoJogador2Nome = new JLabel("Jogador 2: Nome ", SwingConstants.RIGHT);
+        infoJogador2Nome.setFont(arialFont);
+        infoJogador2Vida = new JLabel("Vida: ", SwingConstants.RIGHT);
+        infoJogador2Vida.setFont(arialFont);
+        infoJogador2Mana = new JLabel("Mana: ", SwingConstants.RIGHT);
+        infoJogador2Mana.setFont(arialFont);
+        infoJogador2Deck = new JLabel("Reino: ", SwingConstants.RIGHT);
+        infoJogador2Deck.setFont(arialFont);
+// cor da fonte branca
+        infoJogador1Nome.setFont(arialFont);
+        infoJogador1Nome.setForeground(Color.WHITE);
+        infoJogador1Vida.setFont(arialFont);
+        infoJogador1Vida.setForeground(Color.WHITE);
+        infoJogador1Mana.setFont(arialFont);
+        infoJogador1Mana.setForeground(Color.WHITE);
+        infoJogador1Deck.setFont(arialFont);
+        infoJogador1Deck.setForeground(Color.WHITE);
+
+        infoJogador2Nome.setFont(arialFont);
+        infoJogador2Nome.setForeground(Color.WHITE);
+        infoJogador2Vida.setFont(arialFont);
+        infoJogador2Vida.setForeground(Color.WHITE);
+        infoJogador2Mana.setFont(arialFont);
+        infoJogador2Mana.setForeground(Color.WHITE);
+        infoJogador2Deck.setFont(arialFont);
+        infoJogador2Deck.setForeground(Color.WHITE);
+
+
+        painelInfoJogadores.add(infoJogador1Nome);
+        painelInfoJogadores.add(infoJogador2Nome);
+        painelInfoJogadores.add(infoJogador1Vida);
+        painelInfoJogadores.add(infoJogador2Vida);
+        painelInfoJogadores.add(infoJogador1Mana);
+        painelInfoJogadores.add(infoJogador2Mana);
+        painelInfoJogadores.add(infoJogador1Deck);
+        painelInfoJogadores.add(infoJogador2Deck);
+
+        mainPanel.add(painelInfoJogadores, BorderLayout.NORTH);
+
+        JPanel painelInferior = new JPanel();
+        painelInferior.setLayout(new BorderLayout());
+        painelInferior.setOpaque(false);  // Transparente para mostrar o fundo
+
+        perguntaLabel = new JLabel("SEJAM BEM-VINDOS AS CRÔNICAS DE ARCANA!", SwingConstants.CENTER);
+        perguntaLabel.setFont(arialFont);
+        perguntaLabel.setForeground(Color.WHITE); // Ajusta a cor do texto para visibilidade
+
+        campoEntrada = new JTextField();
+        campoEntrada.setFont(arialFont);
+        campoEntrada.setVisible(false);
+        campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
+
+        JButton comecarButton = new JButton("Começar Jogo");
+        comecarButton.setFont(arialFont);
+        comecarButton.setForeground(Color.BLUE); // Cor do texto do botão
+
+        comecarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                iniciarPerguntas();
+                comecarButton.setVisible(false);
+                campoEntrada.setVisible(true);
+            }
+        });
+
+        campoEntrada.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resposta = campoEntrada.getText();
+                processarResposta(resposta);
+                campoEntrada.setText("");
+            }
+        });
+
+        painelInferior.add(perguntaLabel, BorderLayout.NORTH);
+        painelInferior.add(campoEntrada, BorderLayout.CENTER);
+        painelInferior.add(comecarButton, BorderLayout.SOUTH);
+
+        mainPanel.add(painelInferior, BorderLayout.SOUTH);
+    }
+
+    private void iniciarPerguntas() {
+        campoEntrada.setEnabled(true);
+        perguntaLabel.setText("<html>JOGADOR 1, DIGITE O NOME DE SEU PERSONAGEM:</html>");
+        etapaPergunta = 1;
+    }
+
+    private void processarResposta(String resposta) {
+        switch (etapaPergunta) {
+            case 1:
+                personagem1 = resposta;
+                infoJogador1Nome.setText("Jogador 1: " + personagem1);
+                perguntaLabel.setText("<html>JOGADOR 2, DIGITE O NOME DE SEU PERSONAGEM:</html>");
+                etapaPergunta = 2;
+                break;
+            case 2:
+                personagem2 = resposta;
+                infoJogador2Nome.setText("Jogador 2: " + personagem2);
+                perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO:</html>");
+                etapaPergunta = 3;
+                break;
+            case 3:
+                deck1 = resposta;
+                infoJogador1Deck.setText("Deck: " + deck1);
+                perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO:</html>");
+                etapaPergunta = 4;
+                break;
+            case 4:
+                deck2 = resposta;
+                infoJogador2Deck.setText("Deck: " + deck2);
+                perguntaLabel.setText("<html>O resto é combate/implementar</html>");
+                etapaPergunta = 0;
+                break;
+        }
+
+        campoEntrada.setText("");
+    }
+
+    // painel de fundo personalizado
+    private class BackgroundPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                InterfaceCronicas interfaceJogo = new InterfaceCronicas();
+                interfaceJogo.setVisible(true);
+            }
+        });
+    }
+}
