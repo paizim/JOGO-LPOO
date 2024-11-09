@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
 public class InterfaceCronicas extends JFrame {
     private JLabel perguntaLabel;
     private JTextField campoEntrada;
@@ -24,6 +23,10 @@ public class InterfaceCronicas extends JFrame {
     private JLabel infoJogador2Deck;
     private Font pressStart2PFont;
     private Image backgroundImage;
+
+    // Declaração do painel de informações dos jogadores
+    private JPanel painelInfoJogadores;
+    private JButton comecarButton; // Botão para começar o jogo
 
     public InterfaceCronicas() {
         // Carregar a fonte PressStart2P
@@ -56,17 +59,20 @@ public class InterfaceCronicas extends JFrame {
         campoEntrada.setVisible(false);
         campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
 
-        JButton comecarButton = new JButton("Começar");
+        comecarButton = new JButton("Começar");
         comecarButton.setFont(pressStart2PFont);
         comecarButton.setForeground(Color.black); // Fonte preta para o botão
 
-        JButton finalComecarButton = comecarButton;
+        // Definir a ação do botão "Começar"
         comecarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Revelar o painel de informações e iniciar o processo de perguntas
                 iniciarPerguntas();
-                finalComecarButton.setVisible(false);
-                campoEntrada.setVisible(true);
+                comecarButton.setVisible(false);  // Esconder o botão "Começar"
+                painelInfoJogadores.setVisible(true);  // Mostrar o painel de informações
+                campoEntrada.setVisible(true);  // Mostrar o campo de entrada
+                campoEntrada.setEnabled(true);  // Garantir que o campo de entrada esteja habilitado
             }
         });
 
@@ -81,11 +87,13 @@ public class InterfaceCronicas extends JFrame {
         mainPanel.setLayout(new BorderLayout());
         setContentPane(mainPanel);
 
-        JPanel painelInfoJogadores = new JPanel();
+        // Criando o painel de informações dos jogadores
+        painelInfoJogadores = new JPanel();
         painelInfoJogadores.setLayout(new GridLayout(4, 2));
         painelInfoJogadores.setOpaque(false);
+        painelInfoJogadores.setVisible(false);  // Inicialmente invisível
 
-        infoJogador1Nome = new JLabel("Jogador 1: Nome: ", SwingConstants.LEFT);
+        infoJogador1Nome = new JLabel("Jogador 1: ", SwingConstants.LEFT);
         infoJogador1Nome.setFont(pressStart2PFont);
         infoJogador1Nome.setForeground(Color.WHITE);
         infoJogador1Vida = new JLabel("Vida: ", SwingConstants.LEFT);
@@ -98,7 +106,7 @@ public class InterfaceCronicas extends JFrame {
         infoJogador1Deck.setFont(pressStart2PFont);
         infoJogador1Deck.setForeground(Color.WHITE);
 
-        infoJogador2Nome = new JLabel("Jogador 2: Nome: ", SwingConstants.RIGHT);
+        infoJogador2Nome = new JLabel("Jogador 2: ", SwingConstants.RIGHT);
         infoJogador2Nome.setFont(pressStart2PFont);
         infoJogador2Nome.setForeground(Color.WHITE);
         infoJogador2Vida = new JLabel("Vida: ", SwingConstants.RIGHT);
@@ -122,13 +130,12 @@ public class InterfaceCronicas extends JFrame {
 
         mainPanel.add(painelInfoJogadores, BorderLayout.NORTH);
 
-        painelInferior = new JPanel();
         painelInferior.setLayout(new BorderLayout());
         painelInferior.setOpaque(false);
 
         perguntaLabel = new JLabel("CRÔNICAS DE ARCANA", SwingConstants.CENTER);
         perguntaLabel.setFont(pressStart2PFont); // Usando PressStart2P para a pergunta
-        perguntaLabel.setForeground(Color.WHITE);  // Font branca no título
+        perguntaLabel.setForeground(Color.WHITE);
 
         campoEntrada = new JTextField();
         campoEntrada.setFont(pressStart2PFont);
@@ -136,32 +143,19 @@ public class InterfaceCronicas extends JFrame {
         campoEntrada.setVisible(false);
         campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
 
-        comecarButton = new JButton("Começar Jogo");
-        comecarButton.setFont(pressStart2PFont);
-        comecarButton.setForeground(Color.black); // Fonte preta para o botão
-
-        JButton finalComecarButton1 = comecarButton;
-        comecarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                iniciarPerguntas();
-                finalComecarButton1.setVisible(false);
-                campoEntrada.setVisible(true);
-            }
-        });
-
+        // Adicionando um ActionListener para capturar as respostas
         campoEntrada.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String resposta = campoEntrada.getText();
-                processarResposta(resposta);
-                campoEntrada.setText("");
+                processarResposta(resposta);  // Processa a resposta dada
+                campoEntrada.setText("");  // Limpa o campo de entrada após a resposta
             }
         });
 
         painelInferior.add(perguntaLabel, BorderLayout.NORTH);
         painelInferior.add(campoEntrada, BorderLayout.CENTER);
-        painelInferior.add(comecarButton, BorderLayout.SOUTH);
+        painelInferior.add(comecarButton, BorderLayout.SOUTH); // Colocando o botão abaixo do campo de entrada
 
         mainPanel.add(painelInferior, BorderLayout.SOUTH);
     }
@@ -169,7 +163,6 @@ public class InterfaceCronicas extends JFrame {
     private void iniciarPerguntas() {
         campoEntrada.setEnabled(true);
         perguntaLabel.setText("<html>JOGADOR 1, DIGITE O NOME DE SEU PERSONAGEM:</html>");
-        perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
         etapaPergunta = 1;
     }
 
@@ -179,21 +172,18 @@ public class InterfaceCronicas extends JFrame {
                 personagem1 = resposta;
                 infoJogador1Nome.setText("Jogador 1: " + personagem1);
                 perguntaLabel.setText("<html>JOGADOR 2, DIGITE O NOME DE SEU PERSONAGEM:</html>");
-                perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
                 etapaPergunta = 2;
                 break;
             case 2:
                 personagem2 = resposta;
                 infoJogador2Nome.setText("Jogador 2: " + personagem2);
                 perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO:</html>");
-                perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
                 etapaPergunta = 3;
                 break;
             case 3:
                 deck1 = resposta;
                 infoJogador1Deck.setText("Deck: " + deck1);
                 perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO:</html>");
-                perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
                 etapaPergunta = 4;
                 break;
             case 4:
@@ -207,7 +197,8 @@ public class InterfaceCronicas extends JFrame {
         }
     }
 
-    class BackgroundPanel extends JPanel {
+    // Painel com fundo personalizado
+    private class BackgroundPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -221,7 +212,8 @@ public class InterfaceCronicas extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new InterfaceCronicas().setVisible(true);
+                InterfaceCronicas frame = new InterfaceCronicas();
+                frame.setVisible(true);
             }
         });
     }
