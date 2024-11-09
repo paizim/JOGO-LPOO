@@ -22,12 +22,17 @@ public class InterfaceCronicas extends JFrame {
     private JLabel infoJogador2Vida;
     private JLabel infoJogador2Mana;
     private JLabel infoJogador2Deck;
-    private Font arialFont;
+    private Font pressStart2PFont;
     private Image backgroundImage;
 
     public InterfaceCronicas() {
-        // definir fonte Arial
-        arialFont = new Font("Arial", Font.PLAIN, 18);
+        // Carregar a fonte PressStart2P
+        try {
+            pressStart2PFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/PressStart2P.ttf")).deriveFont(18f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            System.out.println("Erro ao carregar a fonte PressStart2P.");
+        }
 
         // Carregar a imagem de fundo
         try {
@@ -37,57 +42,74 @@ public class InterfaceCronicas extends JFrame {
             System.out.println("Erro ao carregar a imagem de fundo.");
         }
 
+        JPanel painelInferior = new JPanel();
+        painelInferior.setLayout(new BorderLayout());
+        painelInferior.setOpaque(false); // Torna o painel inferior transparente
+
+        perguntaLabel = new JLabel("CRÔNICAS DE ARCANA", SwingConstants.CENTER);
+        perguntaLabel.setFont(pressStart2PFont); // Usando PressStart2P para a pergunta
+        perguntaLabel.setForeground(Color.WHITE); // Ajusta a cor do texto para visibilidade
+
+        campoEntrada = new JTextField();
+        campoEntrada.setFont(pressStart2PFont);  // Definindo fonte para o campo de entrada
+        campoEntrada.setForeground(Color.BLACK); // Definir texto como preto
+        campoEntrada.setVisible(false);
+        campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
+
+        JButton comecarButton = new JButton("Começar");
+        comecarButton.setFont(pressStart2PFont);
+        comecarButton.setForeground(Color.black); // Fonte preta para o botão
+
+        JButton finalComecarButton = comecarButton;
+        comecarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                iniciarPerguntas();
+                finalComecarButton.setVisible(false);
+                campoEntrada.setVisible(true);
+            }
+        });
+
         setTitle("Crônicas de Arcana");
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // painel com fundo personalizado
+        // Painel com fundo personalizado
         BackgroundPanel mainPanel = new BackgroundPanel();
         mainPanel.setLayout(new BorderLayout());
         setContentPane(mainPanel);
 
         JPanel painelInfoJogadores = new JPanel();
         painelInfoJogadores.setLayout(new GridLayout(4, 2));
-        painelInfoJogadores.setOpaque(false);  // Transparente para mostrar o fundo
+        painelInfoJogadores.setOpaque(false);
 
-        infoJogador1Nome = new JLabel("Jogador 1: Nome ", SwingConstants.LEFT);
-        infoJogador1Nome.setFont(arialFont);
-        infoJogador1Vida = new JLabel("Vida: ", SwingConstants.LEFT);
-        infoJogador1Vida.setFont(arialFont);
-        infoJogador1Mana = new JLabel("Mana: ", SwingConstants.LEFT);
-        infoJogador1Mana.setFont(arialFont);
-        infoJogador1Deck = new JLabel("Reino: ", SwingConstants.LEFT);
-        infoJogador1Deck.setFont(arialFont);
-
-        infoJogador2Nome = new JLabel("Jogador 2: Nome ", SwingConstants.RIGHT);
-        infoJogador2Nome.setFont(arialFont);
-        infoJogador2Vida = new JLabel("Vida: ", SwingConstants.RIGHT);
-        infoJogador2Vida.setFont(arialFont);
-        infoJogador2Mana = new JLabel("Mana: ", SwingConstants.RIGHT);
-        infoJogador2Mana.setFont(arialFont);
-        infoJogador2Deck = new JLabel("Reino: ", SwingConstants.RIGHT);
-        infoJogador2Deck.setFont(arialFont);
-// cor da fonte branca
-        infoJogador1Nome.setFont(arialFont);
+        infoJogador1Nome = new JLabel("Jogador 1: Nome: ", SwingConstants.LEFT);
+        infoJogador1Nome.setFont(pressStart2PFont);
         infoJogador1Nome.setForeground(Color.WHITE);
-        infoJogador1Vida.setFont(arialFont);
+        infoJogador1Vida = new JLabel("Vida: ", SwingConstants.LEFT);
+        infoJogador1Vida.setFont(pressStart2PFont);
         infoJogador1Vida.setForeground(Color.WHITE);
-        infoJogador1Mana.setFont(arialFont);
+        infoJogador1Mana = new JLabel("Mana: ", SwingConstants.LEFT);
+        infoJogador1Mana.setFont(pressStart2PFont);
         infoJogador1Mana.setForeground(Color.WHITE);
-        infoJogador1Deck.setFont(arialFont);
+        infoJogador1Deck = new JLabel("Reino: ", SwingConstants.LEFT);
+        infoJogador1Deck.setFont(pressStart2PFont);
         infoJogador1Deck.setForeground(Color.WHITE);
 
-        infoJogador2Nome.setFont(arialFont);
+        infoJogador2Nome = new JLabel("Jogador 2: Nome: ", SwingConstants.RIGHT);
+        infoJogador2Nome.setFont(pressStart2PFont);
         infoJogador2Nome.setForeground(Color.WHITE);
-        infoJogador2Vida.setFont(arialFont);
+        infoJogador2Vida = new JLabel("Vida: ", SwingConstants.RIGHT);
+        infoJogador2Vida.setFont(pressStart2PFont);
         infoJogador2Vida.setForeground(Color.WHITE);
-        infoJogador2Mana.setFont(arialFont);
+        infoJogador2Mana = new JLabel("Mana: ", SwingConstants.RIGHT);
+        infoJogador2Mana.setFont(pressStart2PFont);
         infoJogador2Mana.setForeground(Color.WHITE);
-        infoJogador2Deck.setFont(arialFont);
+        infoJogador2Deck = new JLabel("Reino: ", SwingConstants.RIGHT);
+        infoJogador2Deck.setFont(pressStart2PFont);
         infoJogador2Deck.setForeground(Color.WHITE);
-
 
         painelInfoJogadores.add(infoJogador1Nome);
         painelInfoJogadores.add(infoJogador2Nome);
@@ -100,28 +122,30 @@ public class InterfaceCronicas extends JFrame {
 
         mainPanel.add(painelInfoJogadores, BorderLayout.NORTH);
 
-        JPanel painelInferior = new JPanel();
+        painelInferior = new JPanel();
         painelInferior.setLayout(new BorderLayout());
-        painelInferior.setOpaque(false);  // Transparente para mostrar o fundo
+        painelInferior.setOpaque(false);
 
-        perguntaLabel = new JLabel("SEJAM BEM-VINDOS AS CRÔNICAS DE ARCANA!", SwingConstants.CENTER);
-        perguntaLabel.setFont(arialFont);
-        perguntaLabel.setForeground(Color.WHITE); // Ajusta a cor do texto para visibilidade
+        perguntaLabel = new JLabel("CRÔNICAS DE ARCANA", SwingConstants.CENTER);
+        perguntaLabel.setFont(pressStart2PFont); // Usando PressStart2P para a pergunta
+        perguntaLabel.setForeground(Color.WHITE);  // Font branca no título
 
         campoEntrada = new JTextField();
-        campoEntrada.setFont(arialFont);
+        campoEntrada.setFont(pressStart2PFont);
+        campoEntrada.setForeground(Color.BLACK); // Definir texto como preto no campo de entrada
         campoEntrada.setVisible(false);
         campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
 
-        JButton comecarButton = new JButton("Começar Jogo");
-        comecarButton.setFont(arialFont);
-        comecarButton.setForeground(Color.BLUE); // Cor do texto do botão
+        comecarButton = new JButton("Começar Jogo");
+        comecarButton.setFont(pressStart2PFont);
+        comecarButton.setForeground(Color.black); // Fonte preta para o botão
 
+        JButton finalComecarButton1 = comecarButton;
         comecarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 iniciarPerguntas();
-                comecarButton.setVisible(false);
+                finalComecarButton1.setVisible(false);
                 campoEntrada.setVisible(true);
             }
         });
@@ -145,6 +169,7 @@ public class InterfaceCronicas extends JFrame {
     private void iniciarPerguntas() {
         campoEntrada.setEnabled(true);
         perguntaLabel.setText("<html>JOGADOR 1, DIGITE O NOME DE SEU PERSONAGEM:</html>");
+        perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
         etapaPergunta = 1;
     }
 
@@ -154,33 +179,35 @@ public class InterfaceCronicas extends JFrame {
                 personagem1 = resposta;
                 infoJogador1Nome.setText("Jogador 1: " + personagem1);
                 perguntaLabel.setText("<html>JOGADOR 2, DIGITE O NOME DE SEU PERSONAGEM:</html>");
+                perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
                 etapaPergunta = 2;
                 break;
             case 2:
                 personagem2 = resposta;
                 infoJogador2Nome.setText("Jogador 2: " + personagem2);
                 perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO:</html>");
+                perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
                 etapaPergunta = 3;
                 break;
             case 3:
                 deck1 = resposta;
                 infoJogador1Deck.setText("Deck: " + deck1);
                 perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO:</html>");
+                perguntaLabel.setFont(pressStart2PFont); // Fonte correta para a pergunta
                 etapaPergunta = 4;
                 break;
             case 4:
                 deck2 = resposta;
                 infoJogador2Deck.setText("Deck: " + deck2);
-                perguntaLabel.setText("<html>O resto é combate/implementar</html>");
-                etapaPergunta = 0;
+                perguntaLabel.setText("<html>PREPARE-SE PARA A LUTA!</html>");
+                campoEntrada.setVisible(false);
+                break;
+            default:
                 break;
         }
-
-        campoEntrada.setText("");
     }
 
-    // painel de fundo personalizado
-    private class BackgroundPanel extends JPanel {
+    class BackgroundPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -194,8 +221,7 @@ public class InterfaceCronicas extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                InterfaceCronicas interfaceJogo = new InterfaceCronicas();
-                interfaceJogo.setVisible(true);
+                new InterfaceCronicas().setVisible(true);
             }
         });
     }
