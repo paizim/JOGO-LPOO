@@ -1,10 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
 public class InterfaceCronicas extends JFrame {
     private JLabel perguntaLabel;
     private JTextField campoEntrada;
@@ -27,6 +27,10 @@ public class InterfaceCronicas extends JFrame {
     // Declaração do painel de informações dos jogadores
     private JPanel painelInfoJogadores;
     private JButton comecarButton; // Botão para começar o jogo
+
+    private String escolhaParOuImpar;
+    private int numeroSorteado;
+    private String vencedor;
 
     public InterfaceCronicas() {
         // Carregar a fonte PressStart2P
@@ -189,16 +193,25 @@ public class InterfaceCronicas extends JFrame {
             case 4:
                 deck2 = resposta;
                 infoJogador2Deck.setText("Deck: " + deck2);
-                perguntaLabel.setText("<html>PREPARE-SE PARA A LUTA!</html>");
-                campoEntrada.setVisible(false);
+                perguntaLabel.setText("<html>ESCOLHA: PAR OU ÍMPAR?</html>");
+                etapaPergunta = 5;
                 break;
-            default:
+            case 5:
+                escolhaParOuImpar = resposta.toLowerCase();
+                numeroSorteado = (int) (Math.random() * 10) + 1; // Sorteia um número de 1 a 10
+                if ((numeroSorteado % 2 == 0 && escolhaParOuImpar.equals("par")) || (numeroSorteado % 2 != 0 && escolhaParOuImpar.equals("ímpar"))) {
+                    vencedor = "O vencedor é: " + (escolhaParOuImpar.equals("par") ? personagem1 : personagem2) + " (Número sorteado: " + numeroSorteado + ")";
+                } else {
+                    vencedor = "O vencedor é: " + (escolhaParOuImpar.equals("par") ? personagem2 : personagem1) + " (Número sorteado: " + numeroSorteado + ")";
+                }
+                perguntaLabel.setText("<html>" + vencedor + "</html>");
                 break;
         }
     }
 
-    // Painel com fundo personalizado
-    private class BackgroundPanel extends JPanel {
+
+    // Classe interna para painel com fundo
+    class BackgroundPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -212,8 +225,7 @@ public class InterfaceCronicas extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                InterfaceCronicas frame = new InterfaceCronicas();
-                frame.setVisible(true);
+                new InterfaceCronicas().setVisible(true);
             }
         });
     }
