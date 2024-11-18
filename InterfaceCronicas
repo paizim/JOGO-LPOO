@@ -180,22 +180,32 @@ public class InterfaceCronicas extends JFrame {
             case 2: {
                 personagem2 = resposta;
                 infoJogador2Nome.setText("Jogador 2: " + personagem2);
-                perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO:</html>");
+                perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO (DEFENSORES DA HUMANIDADE ou HORDA DOS GOBLINS):</html>");
                 etapaPergunta = 3;
                 break;
             }
             case 3: {
-                deck1 = resposta;
-                infoJogador1Deck.setText("Deck: " + deck1);
-                perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO:</html>");
-                etapaPergunta = 4;
+                resposta = resposta.toUpperCase(); // Para validar o input em maiúsculas, como no console
+                if (resposta.equals("DEFENSORES DA HUMANIDADE") || resposta.equals("HORDA DOS GOBLINS")) {
+                    deck1 = resposta;
+                    infoJogador1Deck.setText("Reino: " + deck1);
+                    perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO (DEFENSORES DA HUMANIDADE ou HORDA DOS GOBLINS):</html>");
+                    etapaPergunta = 4;
+                } else {
+                    perguntaLabel.setText("<html>OPÇÃO INVÁLIDA. ESCOLHA UM REINO VÁLIDO (DEFENSORES DA HUMANIDADE ou HORDA DOS GOBLINS):</html>");
+                }
                 break;
             }
             case 4: {
-                deck2 = resposta;
-                infoJogador2Deck.setText("Deck: " + deck2);
-                perguntaLabel.setText("<html>ESCOLHA: PAR OU ÍMPAR?</html>");
-                etapaPergunta = 5;
+                resposta = resposta.toUpperCase(); // Para validar o input em maiúsculas
+                if (resposta.equals("DEFENSORES DA HUMANIDADE") || resposta.equals("HORDA DOS GOBLINS")) {
+                    deck2 = resposta;
+                    infoJogador2Deck.setText("Reino: " + deck2);
+                    perguntaLabel.setText("<html>ESCOLHA: PAR OU ÍMPAR?</html>");
+                    etapaPergunta = 5;
+                } else {
+                    perguntaLabel.setText("<html>OPÇÃO INVÁLIDA. ESCOLHA UM REINO VÁLIDO (DEFENSORES DA HUMANIDADE ou HORDA DOS GOBLINS):</html>");
+                }
                 break;
             }
             case 5: {
@@ -219,7 +229,7 @@ public class InterfaceCronicas extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Jogo jogo = new Jogo(); 
+            Jogo jogo = new Jogo();
             new InterfaceCronicas(jogo).setVisible(true);
         });
     }
