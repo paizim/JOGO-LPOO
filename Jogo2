@@ -1,0 +1,193 @@
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+
+//essa é uma classe Jogo que eu fiz cortando as interações para rodar com a interface, não sei se tá liso ainda
+
+public class Jogo {
+    private int nivelJogador1 = 1;
+    private int nivelJogador2 = 1;
+    private int experienciaJogador1 = 0;
+    private int experienciaJogador2 = 0;
+    private ArrayList<Carta> deck1;
+    private ArrayList<Carta> deck2;
+    private ArrayList<Carta> maoJogador1;
+    private ArrayList<Carta> maoJogador2;
+    private ArrayList<Carta> cartasJogadasJogador1;
+    private ArrayList<Carta> cartasJogadasJogador2;
+    private ArrayList<Criatura> campoJogador1;
+    private ArrayList<Criatura> campoJogador2;
+    private ArrayList<Carta> cemiterio;
+    private int vidaJogador1 = 15;
+    private int vidaJogador2 = 15;
+    private String jogador1;
+    private String jogador2;
+    private boolean vezDoJogador1;
+    private Random random;
+    private Scanner scanner;
+    private int manaJogador1 = 1;
+    private int manaJogador2 = 1;
+    private String reinoJogador1;
+    private String reinoJogador2;
+    private final ArrayList<String> reinosDisponiveis = new ArrayList<>();
+
+    public Jogo() {
+        this.deck1 = Decks.criarDeck1();
+        this.deck2 = Decks.criarDeck2();
+        this.maoJogador1 = new ArrayList<>();
+        this.maoJogador2 = new ArrayList<>();
+        this.cartasJogadasJogador1 = new ArrayList<>();
+        this.cartasJogadasJogador2 = new ArrayList<>();
+        this.cemiterio = new ArrayList<>();
+        this.random = new Random();
+        this.vezDoJogador1 = true;
+        this.scanner = new Scanner(System.in);
+        this.campoJogador1 = new ArrayList<>();
+        this.campoJogador2 = new ArrayList<>();
+
+        reinosDisponiveis.add("DEFENSORES DA HUMANIDADE");
+        reinosDisponiveis.add("HORDA DOS GOBLINS");
+    }
+
+    // Getters e setters de mana e vida
+    public int getManaJogador1() {
+        return manaJogador1;
+    }
+
+    public int getManaJogador2() {
+        return manaJogador2;
+    }
+
+    public int getVidaJogador1() {
+        return vidaJogador1;
+    }
+
+    public int getVidaJogador2() {
+        return vidaJogador2;
+    }
+
+    public void setManaJogador1(int manaJogador1) {
+        this.manaJogador1 = manaJogador1;
+    }
+
+    public void setManaJogador2(int manaJogador2) {
+        this.manaJogador2 = manaJogador2;
+    }
+
+    public void setVidaJogador1(int vidaJogador1) {
+        this.vidaJogador1 = vidaJogador1;
+    }
+
+    public void setVidaJogador2(int vidaJogador2) {
+        this.vidaJogador2 = vidaJogador2;
+    }
+
+    // metodos para os reinos
+    public boolean setReinoJogador1(String reino) {
+        if (reinosDisponiveis.contains(reino.toUpperCase())) {
+            this.reinoJogador1 = reino.toUpperCase();
+            return true; // Sucesso
+        }
+        return false; // Reino inválido
+    }
+
+    public boolean setReinoJogador2(String reino) {
+        if (reinosDisponiveis.contains(reino.toUpperCase())) {
+            this.reinoJogador2 = reino.toUpperCase();
+            return true; // Sucesso
+        }
+        return false;
+    }
+
+    public String getReinoJogador1() {
+        return reinoJogador1;
+    }
+
+    public String getReinoJogador2() {
+        return reinoJogador2;
+    }
+
+    public void jogarParOuImpar() {
+        int escolhaJogador1, escolhaJogador2;
+        int soma;
+
+        System.out.print("Jogador 1, escolha Par (0) ou Ímpar (1): ");
+        while (true) {
+            escolhaJogador1 = scanner.nextInt();
+            if (escolhaJogador1 == 0 || escolhaJogador1 == 1) {
+                break;
+            }
+            System.out.print("Entrada inválida! Escolha 0 para Par ou 1 para Ímpar: ");
+        }
+
+        System.out.print("Jogador 2, escolha Par (0) ou Ímpar (1): ");
+        while (true) {
+            escolhaJogador2 = scanner.nextInt();
+            if (escolhaJogador2 == 0 || escolhaJogador2 == 1) {
+                break;
+            }
+            System.out.print("Entrada inválida! Escolha 0 para Par ou 1 para Ímpar: ");
+        }
+
+        soma = (int) (Math.random() * 10) + 1;
+        System.out.println("O número sorteado é: " + soma);
+
+        if ((soma % 2 == 0 && escolhaJogador1 == 0) || (soma % 2 != 0 && escolhaJogador1 == 1)) {
+            System.out.println("Jogador 1 ganhou o Par ou Ímpar!");
+            vezDoJogador1 = true;
+        } else {
+            System.out.println("Jogador 2 ganhou o Par ou Ímpar!");
+            vezDoJogador1 = false;
+        }
+    }
+
+    private void distribuirCartas() {
+        System.out.println("Distribuindo 5 cartas aleatórias para cada jogador...");
+        for (int i = 0; i < 5; i++) {
+            int indiceCarta1 = random.nextInt(deck1.size());
+            Carta carta1 = deck1.remove(indiceCarta1);
+            maoJogador1.add(carta1);
+
+            int indiceCarta2 = random.nextInt(deck2.size());
+            Carta carta2 = deck2.remove(indiceCarta2);
+            maoJogador2.add(carta2);
+        }
+
+        System.out.println("Cartas do Jogador 1:");
+        for (Carta c : maoJogador1) {
+            System.out.println(c);
+        }
+        System.out.println("Cartas do Jogador 2:");
+        for (Carta c : maoJogador2) {
+            System.out.println(c);
+        }
+    }
+
+    private void jogarTurno() {
+        if (vezDoJogador1) {
+            System.out.println("Vez do Jogador 1.");
+            vezDoJogador1 = false;
+        } else {
+            System.out.println("Vez do Jogador 2.");
+            vezDoJogador1 = true;
+        }
+    }
+
+    private void iniciar() {
+        distribuirCartas();
+        while (vidaJogador1 > 0 && vidaJogador2 > 0) {
+            manaJogador1 += 1;
+            manaJogador2 += 1;
+            jogarTurno();
+        }
+        mostrarVencedor();
+    }
+
+    private void mostrarVencedor() {
+        if (vidaJogador1 <= 0) {
+            System.out.println("Jogador 2 venceu!");
+        } else if (vidaJogador2 <= 0) {
+            System.out.println("Jogador 1 venceu!");
+        }
+    }
+}
