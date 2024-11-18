@@ -6,11 +6,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class InterfaceCronicas extends JFrame {
+    private Jogo jogo; //  classe Jogo para integração
+
     private JLabel perguntaLabel;
     private JTextField campoEntrada;
     private String personagem1, personagem2, deck1, deck2;
-    private int vidaJogador1 = 15, vidaJogador2 = 15;
-    private int manaJogador1 = 1, manaJogador2 = 1;
     private int etapaPergunta = 0;
 
     private JLabel infoJogador1Nome;
@@ -24,16 +24,17 @@ public class InterfaceCronicas extends JFrame {
     private Font pressStart2PFont;
     private Image backgroundImage;
 
-    // Declaração do painel de informações dos jogadores
     private JPanel painelInfoJogadores;
-    private JButton comecarButton; // Botão para começar o jogo
+    private JButton comecarButton;
 
     private String escolhaParOuImpar;
     private int numeroSorteado;
     private String vencedor;
 
-    public InterfaceCronicas() {
-        // Carregar a fonte PressStart2P
+    public InterfaceCronicas(Jogo jogo) {
+        this.jogo = jogo; // conecta a interface à logica do jogo
+
+        // carregar fonte
         try {
             pressStart2PFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/PressStart2P.ttf")).deriveFont(18f);
         } catch (FontFormatException | IOException e) {
@@ -41,7 +42,7 @@ public class InterfaceCronicas extends JFrame {
             System.out.println("Erro ao carregar a fonte PressStart2P.");
         }
 
-        // Carregar a imagem de fundo
+        // carregar a imagem
         try {
             backgroundImage = ImageIO.read(new File("src/images/background.jpg"));
         } catch (IOException e) {
@@ -51,33 +52,38 @@ public class InterfaceCronicas extends JFrame {
 
         JPanel painelInferior = new JPanel();
         painelInferior.setLayout(new BorderLayout());
-        painelInferior.setOpaque(false); // Torna o painel inferior transparente
+        painelInferior.setOpaque(false);
 
         perguntaLabel = new JLabel("CRÔNICAS DE ARCANA", SwingConstants.CENTER);
-        perguntaLabel.setFont(pressStart2PFont); // Usando PressStart2P para a pergunta
-        perguntaLabel.setForeground(Color.WHITE); // Ajusta a cor do texto para visibilidade
+        perguntaLabel.setFont(pressStart2PFont);
+        perguntaLabel.setForeground(Color.WHITE);
 
         campoEntrada = new JTextField();
-        campoEntrada.setFont(pressStart2PFont);  // Definindo fonte para o campo de entrada
-        campoEntrada.setForeground(Color.BLACK); // Definir texto como preto
+        campoEntrada.setFont(pressStart2PFont);
+        campoEntrada.setForeground(Color.BLACK);
         campoEntrada.setVisible(false);
         campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
 
+        // ActionListener para capturar as respostas do jogador
+        campoEntrada.addActionListener(e -> {
+            String resposta = campoEntrada.getText().trim(); // Captura o texto inserido
+            if (!resposta.isEmpty()) {
+                processarResposta(resposta);
+                campoEntrada.setText("");
+            }
+        });
+
         comecarButton = new JButton("Começar");
         comecarButton.setFont(pressStart2PFont);
-        comecarButton.setForeground(Color.black); // Fonte preta para o botão
+        comecarButton.setForeground(Color.BLACK);
 
-        // Definir a ação do botão "Começar"
-        comecarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Revelar o painel de informações e iniciar o processo de perguntas
-                iniciarPerguntas();
-                comecarButton.setVisible(false);  // Esconder o botão "Começar"
-                painelInfoJogadores.setVisible(true);  // Mostrar o painel de informações
-                campoEntrada.setVisible(true);  // Mostrar o campo de entrada
-                campoEntrada.setEnabled(true);  // Garantir que o campo de entrada esteja habilitado
-            }
+        // Ação do botão começar
+        comecarButton.addActionListener(e -> {
+            iniciarPerguntas();
+            comecarButton.setVisible(false);
+            painelInfoJogadores.setVisible(true);
+            campoEntrada.setVisible(true);
+            campoEntrada.setEnabled(true);
         });
 
         setTitle("Crônicas de Arcana");
@@ -86,42 +92,28 @@ public class InterfaceCronicas extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Painel com fundo personalizado
         BackgroundPanel mainPanel = new BackgroundPanel();
         mainPanel.setLayout(new BorderLayout());
         setContentPane(mainPanel);
 
-        // Criando o painel de informações dos jogadores
+        // Painel de informações dos jogadores
         painelInfoJogadores = new JPanel();
         painelInfoJogadores.setLayout(new GridLayout(4, 2));
         painelInfoJogadores.setOpaque(false);
-        painelInfoJogadores.setVisible(false);  // Inicialmente invisível
+        painelInfoJogadores.setVisible(false);
 
         infoJogador1Nome = new JLabel("Jogador 1: ", SwingConstants.LEFT);
-        infoJogador1Nome.setFont(pressStart2PFont);
-        infoJogador1Nome.setForeground(Color.WHITE);
         infoJogador1Vida = new JLabel("Vida: ", SwingConstants.LEFT);
-        infoJogador1Vida.setFont(pressStart2PFont);
-        infoJogador1Vida.setForeground(Color.WHITE);
         infoJogador1Mana = new JLabel("Mana: ", SwingConstants.LEFT);
-        infoJogador1Mana.setFont(pressStart2PFont);
-        infoJogador1Mana.setForeground(Color.WHITE);
         infoJogador1Deck = new JLabel("Reino: ", SwingConstants.LEFT);
-        infoJogador1Deck.setFont(pressStart2PFont);
-        infoJogador1Deck.setForeground(Color.WHITE);
 
         infoJogador2Nome = new JLabel("Jogador 2: ", SwingConstants.RIGHT);
-        infoJogador2Nome.setFont(pressStart2PFont);
-        infoJogador2Nome.setForeground(Color.WHITE);
         infoJogador2Vida = new JLabel("Vida: ", SwingConstants.RIGHT);
-        infoJogador2Vida.setFont(pressStart2PFont);
-        infoJogador2Vida.setForeground(Color.WHITE);
         infoJogador2Mana = new JLabel("Mana: ", SwingConstants.RIGHT);
-        infoJogador2Mana.setFont(pressStart2PFont);
-        infoJogador2Mana.setForeground(Color.WHITE);
         infoJogador2Deck = new JLabel("Reino: ", SwingConstants.RIGHT);
-        infoJogador2Deck.setFont(pressStart2PFont);
-        infoJogador2Deck.setForeground(Color.WHITE);
+
+        ajustarFonteCor(infoJogador1Nome, infoJogador1Vida, infoJogador1Mana, infoJogador1Deck);
+        ajustarFonteCor(infoJogador2Nome, infoJogador2Vida, infoJogador2Mana, infoJogador2Deck);
 
         painelInfoJogadores.add(infoJogador1Nome);
         painelInfoJogadores.add(infoJogador2Nome);
@@ -134,34 +126,22 @@ public class InterfaceCronicas extends JFrame {
 
         mainPanel.add(painelInfoJogadores, BorderLayout.NORTH);
 
-        painelInferior.setLayout(new BorderLayout());
-        painelInferior.setOpaque(false);
-
-        perguntaLabel = new JLabel("CRÔNICAS DE ARCANA", SwingConstants.CENTER);
-        perguntaLabel.setFont(pressStart2PFont); // Usando PressStart2P para a pergunta
-        perguntaLabel.setForeground(Color.WHITE);
-
-        campoEntrada = new JTextField();
-        campoEntrada.setFont(pressStart2PFont);
-        campoEntrada.setForeground(Color.BLACK); // Definir texto como preto no campo de entrada
-        campoEntrada.setVisible(false);
-        campoEntrada.setPreferredSize(new Dimension(campoEntrada.getPreferredSize().width, campoEntrada.getPreferredSize().height * 2));
-
-        // Adicionando um ActionListener para capturar as respostas
-        campoEntrada.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String resposta = campoEntrada.getText();
-                processarResposta(resposta);  // Processa a resposta dada
-                campoEntrada.setText("");  // Limpa o campo de entrada após a resposta
-            }
-        });
-
         painelInferior.add(perguntaLabel, BorderLayout.NORTH);
         painelInferior.add(campoEntrada, BorderLayout.CENTER);
-        painelInferior.add(comecarButton, BorderLayout.SOUTH); // Colocando o botão abaixo do campo de entrada
+        painelInferior.add(comecarButton, BorderLayout.SOUTH);
 
         mainPanel.add(painelInferior, BorderLayout.SOUTH);
+
+        // Timer para atualizar as informações
+        Timer timer = new Timer(1000, e -> atualizarInformacoes());
+        timer.start();
+    }
+
+    private void ajustarFonteCor(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.setFont(pressStart2PFont);
+            label.setForeground(Color.WHITE);
+        }
     }
 
     private void iniciarPerguntas() {
@@ -170,47 +150,14 @@ public class InterfaceCronicas extends JFrame {
         etapaPergunta = 1;
     }
 
-    private void processarResposta(String resposta) {
-        switch (etapaPergunta) {
-            case 1:
-                personagem1 = resposta;
-                infoJogador1Nome.setText("Jogador 1: " + personagem1);
-                perguntaLabel.setText("<html>JOGADOR 2, DIGITE O NOME DE SEU PERSONAGEM:</html>");
-                etapaPergunta = 2;
-                break;
-            case 2:
-                personagem2 = resposta;
-                infoJogador2Nome.setText("Jogador 2: " + personagem2);
-                perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO:</html>");
-                etapaPergunta = 3;
-                break;
-            case 3:
-                deck1 = resposta;
-                infoJogador1Deck.setText("Deck: " + deck1);
-                perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO:</html>");
-                etapaPergunta = 4;
-                break;
-            case 4:
-                deck2 = resposta;
-                infoJogador2Deck.setText("Deck: " + deck2);
-                perguntaLabel.setText("<html>ESCOLHA: PAR OU ÍMPAR?</html>");
-                etapaPergunta = 5;
-                break;
-            case 5:
-                escolhaParOuImpar = resposta.toLowerCase();
-                numeroSorteado = (int) (Math.random() * 10) + 1; // Sorteia um número de 1 a 10
-                if ((numeroSorteado % 2 == 0 && escolhaParOuImpar.equals("par")) || (numeroSorteado % 2 != 0 && escolhaParOuImpar.equals("ímpar"))) {
-                    vencedor = "O vencedor é: " + (escolhaParOuImpar.equals("par") ? personagem1 : personagem2) + " (Número sorteado: " + numeroSorteado + ")";
-                } else {
-                    vencedor = "O vencedor é: " + (escolhaParOuImpar.equals("par") ? personagem2 : personagem1) + " (Número sorteado: " + numeroSorteado + ")";
-                }
-                perguntaLabel.setText("<html>" + vencedor + "</html>");
-                break;
-        }
+    private void atualizarInformacoes() {
+        infoJogador1Vida.setText("Vida: " + jogo.getVidaJogador1());
+        infoJogador1Mana.setText("Mana: " + jogo.getManaJogador1());
+        infoJogador2Vida.setText("Vida: " + jogo.getVidaJogador2());
+        infoJogador2Mana.setText("Mana: " + jogo.getManaJogador2());
     }
 
-
-    // Classe interna para painel com fundo
+    // Classe para o painel com fundo
     class BackgroundPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
@@ -221,12 +168,59 @@ public class InterfaceCronicas extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new InterfaceCronicas().setVisible(true);
+    private void processarResposta(String resposta) {
+        switch (etapaPergunta) {
+            case 1: {
+                personagem1 = resposta;
+                infoJogador1Nome.setText("Jogador 1: " + personagem1);
+                perguntaLabel.setText("<html>JOGADOR 2, DIGITE O NOME DE SEU PERSONAGEM:</html>");
+                etapaPergunta = 2;
+                break;
             }
+            case 2: {
+                personagem2 = resposta;
+                infoJogador2Nome.setText("Jogador 2: " + personagem2);
+                perguntaLabel.setText("<html>JOGADOR 1, ESCOLHA UM REINO:</html>");
+                etapaPergunta = 3;
+                break;
+            }
+            case 3: {
+                deck1 = resposta;
+                infoJogador1Deck.setText("Deck: " + deck1);
+                perguntaLabel.setText("<html>JOGADOR 2, ESCOLHA UM REINO:</html>");
+                etapaPergunta = 4;
+                break;
+            }
+            case 4: {
+                deck2 = resposta;
+                infoJogador2Deck.setText("Deck: " + deck2);
+                perguntaLabel.setText("<html>ESCOLHA: PAR OU ÍMPAR?</html>");
+                etapaPergunta = 5;
+                break;
+            }
+            case 5: {
+                escolhaParOuImpar = resposta.toLowerCase();
+                numeroSorteado = (int) (Math.random() * 10) + 1;
+
+                vencedor = ((numeroSorteado % 2 == 0 && escolhaParOuImpar.equals("par")) ||
+                        (numeroSorteado % 2 != 0 && escolhaParOuImpar.equals("ímpar")))
+                        ? personagem1 : personagem2;
+
+                perguntaLabel.setText("<html>" + vencedor + " começará jogando!<br>(Número sorteado: " + numeroSorteado + ")</html>");
+                campoEntrada.setEnabled(false);
+                break;
+            }
+            default: {
+                perguntaLabel.setText("Erro inesperado. Reinicie o jogo.");
+                break;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Jogo jogo = new Jogo(); 
+            new InterfaceCronicas(jogo).setVisible(true);
         });
     }
 }
