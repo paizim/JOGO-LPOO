@@ -1,4 +1,4 @@
-public abstract class Carta implements Usavel {
+public abstract class Carta {
     protected String nome;
     protected int custoMana;
 
