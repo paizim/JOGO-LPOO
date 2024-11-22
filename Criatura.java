@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Criatura extends Carta implements Atacavel {
+public class Criatura extends Carta {
     protected int poder;
     protected int resistencia;
     protected ArrayList<String> habilidades;
