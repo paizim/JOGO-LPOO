@@ -13,7 +13,7 @@ public class Jogo {
     private ArrayList<Carta> maoJogador2;
     private ArrayList<Criatura> campoJogador1;
     private ArrayList<Criatura> campoJogador2;
-    private ArrayList<Carta> cemiterio; // Cemitério para cartas destruídas
+    private ArrayList<Carta> cemiterio; 
     private int vidaJogador1 = 15;
     private int vidaJogador2 = 15;
     private String personagem1;
@@ -23,15 +23,15 @@ public class Jogo {
     private boolean vezDoJogador1;
     private Random random;
     private Scanner scanner;
-    private int manaJogador1 = 9; // Mana inicial do Jogador 1
-    private int manaJogador2 = 9; // Mana inicial do Jogador 2
+    private int manaJogador1 = 4; 
+    private int manaJogador2 = 4; 
 
     public Jogo() {
         this.deck1 = Decks.criarDeck1();
         this.deck2 = Decks.criarDeck2();
         this.maoJogador1 = new ArrayList<>();
         this.maoJogador2 = new ArrayList<>();
-        this.cemiterio = new ArrayList<>(); // Inicializando o cemitério
+        this.cemiterio = new ArrayList<>(); 
         this.random = new Random();
         this.scanner = new Scanner(System.in);
         this.campoJogador1 = new ArrayList<>();
@@ -102,11 +102,11 @@ public class Jogo {
 
     private void ganharExperiencia(int jogador) {
         if (jogador == 1) {
-            experienciaJogador1 += 10; // Ganhar 10 de experiência a cada turno
+            experienciaJogador1 += 10; 
             System.out.println(personagem1 + " ganhou 10 de experiência! Total:" + experienciaJogador1);
             verificarSubirNivel(1);
         } else {
-            experienciaJogador2 += 10; // Ganhar 10 de experiência a cada turno
+            experienciaJogador2 += 10; 
             System.out.println(personagem2 + " ganhou 10 de experiência! Total:" + experienciaJogador2);
             verificarSubirNivel(2);
         }
