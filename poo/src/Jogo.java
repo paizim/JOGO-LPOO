@@ -23,8 +23,8 @@ public class Jogo {
     private boolean vezDoJogador1;
     private Random random;
     private Scanner scanner;
-    private int manaJogador1 = 1; // Mana inicial do Jogador 1
-    private int manaJogador2 = 1; // Mana inicial do Jogador 2
+    private int manaJogador1 = 9; // Mana inicial do Jogador 1
+    private int manaJogador2 = 9; // Mana inicial do Jogador 2
 
     public Jogo() {
         this.deck1 = Decks.criarDeck1();
@@ -224,77 +224,6 @@ public class Jogo {
         exibirCemiterio();
     }
 
-    // Função para jogar uma criatura no campo
-    private void usarCriatura(int jogador, Criatura criatura) {
-        if (jogador == 1) {
-            maoJogador1.remove(criatura);
-            campoJogador1.add(criatura);
-            manaJogador1 -= criatura.getCustoMana();
-            System.out.println(personagem1 + " jogou a criatura: " + criatura.getNome());
-            criatura.mostrarAtributos();
-        } else {
-            maoJogador2.remove(criatura);
-            campoJogador2.add(criatura);
-            manaJogador2 -= criatura.getCustoMana();
-            System.out.println(personagem2 + " jogou a criatura: " + criatura.getNome());
-            criatura.mostrarAtributos();
-        }
-    }
-
-    private void colocarNoCampo(int jogador, int indiceCarta) {
-        Carta carta = (jogador == 1) ? maoJogador1.remove(indiceCarta) : maoJogador2.remove(indiceCarta);
-        if (jogador == 1) {
-            campoJogador1.add((Criatura) carta);
-            System.out.println(personagem1 + " colocou " + carta.getNome() + " no campo de batalha.");
-        } else {
-            campoJogador2.add((Criatura) carta);
-            System.out.println(personagem2 + " colocou " + carta.getNome() + " no campo de batalha.");
-        }
-    }
-
-
-    private void ataque(int jogador, Criatura criatura) {
-        ArrayList<Criatura> campoOponente = (jogador == 1) ? campoJogador2 : campoJogador1;
-
-        if (!campoOponente.isEmpty()) {
-            System.out.println("Escolha uma criatura no campo do oponente para atacar:");
-            for (int i = 0; i < campoOponente.size(); i++) {
-                Criatura criaturaOponente = (Criatura) campoOponente.get(i);
-                System.out.println((i + 1) + ": " + criaturaOponente.getNome() + " - Poder: " + criaturaOponente.getPoder() + ", Resistência: " + criaturaOponente.getResistencia());
-            }
-            System.out.print("Escolha o número da criatura: ");
-            int escolha = scanner.nextInt();
-
-            if (escolha > 0 && escolha <= campoOponente.size()) {
-                Criatura criaturaOponente = (Criatura) campoOponente.get(escolha - 1);
-                realizarCombate(criatura, criaturaOponente);
-
-                // Modificação permanente de resistência após o combate
-                int danoCausado = criatura.getPoder();
-                int novaResistencia = criaturaOponente.getResistencia() - danoCausado;
-                criaturaOponente.setResistencia(novaResistencia);
-                System.out.println(criaturaOponente.getNome() + " agora tem " + novaResistencia + " de resistência.");
-
-                if (novaResistencia <= 0) {
-                    // Eliminar a criatura oponente se a resistência chegar a zero ou menos
-                    campoOponente.remove(escolha - 1);
-                    System.out.println(criaturaOponente.getNome() + " foi eliminado!");
-                }
-            } else {
-                System.out.println("Escolha inválida.");
-            }
-        } else {
-            if (jogador == 1) {
-                vidaJogador2 -= criatura.getPoder();
-                System.out.println(personagem1 + " atacou Jogador 2, causando " + criatura.getPoder() + " de dano.");
-            } else {
-                vidaJogador1 -= criatura.getPoder();
-                System.out.println(personagem2 + " atacou Jogador 1, causando " + criatura.getPoder() + " de dano.");
-            }
-        }
-    }
-
-
     // Função para resolver combate entre duas criaturas
     private void realizarCombate(Criatura atacante, Criatura defensora) {
         int resistenciaDefensora = defensora.getResistencia() - atacante.getPoder();
@@ -458,25 +387,3 @@ public class Jogo {
         ganharExperiencia(2); // Jogador 2 ganha experiência
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
